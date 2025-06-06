@@ -2,25 +2,40 @@ from flask import Flask, request, jsonify
 from together import Together
 import os
 from dotenv import load_dotenv
+import json
+from datetime import datetime
 
 load_dotenv()
 
 app = Flask(__name__)
 client = Together(api_key=os.getenv('TOGETHER_API_KEY'))
 
+def log_message(message):
+    """Hulpfunctie voor console logging met timestamp"""
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    print(f"[{timestamp}] {message}")
+
 @app.route('/', methods=['GET'])
 def health_check():
+    log_message("🟢 Health check endpoint accessed")
     return jsonify({"status": "OK", "message": "Skraw.ai API is running"})
 
 @app.route('/evaluate-guess', methods=['POST'])
 def evaluate_guess():
     try:
+        log_message("🔵 New request received at /evaluate-guess")
+        
         data = request.get_json()
         target_word = data.get('target_word')
         user_guess = data.get('user_guess')
         
+        log_message(f"📥 Input data: target_word='{target_word}', user_guess='{user_guess}'")
+        
         if not target_word or not user_guess:
+            log_message("❌ Missing required input data")
             return jsonify({"error": "target_word and user_guess are required"}), 400
+        
+        log_message("🤖 Sending request to Together AI...")
         
         response = client.chat.completions.create(
             model="meta-llama/Llama-3.3-70B-Instruct-Turbo-Free",
@@ -46,15 +61,25 @@ def evaluate_guess():
         
         ai_feedback = response.choices[0].message.content.strip()
         
-        return jsonify({
+        log_message(f"🧠 AI Response: '{ai_feedback}'")
+        
+        result = {
             "target_word": target_word,
             "user_guess": user_guess,
             "feedback": ai_feedback
-        })
+        }
+        
+        log_message(f"📤 Sending response: {json.dumps(result, ensure_ascii=False)}")
+        
+        return jsonify(result)
         
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        error_msg = str(e)
+        log_message(f"💥 Error occurred: {error_msg}")
+        return jsonify({"error": error_msg}), 500
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
+    log_message(f"🚀 Starting Skraw.ai API server on port {port}")
+    log_message("🎯 Ready to evaluate guesses!")
     app.run(host='0.0.0.0', port=port, debug=False)
