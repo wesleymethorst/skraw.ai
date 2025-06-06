@@ -2,7 +2,8 @@ from together import Together
 
 client = Together()
 
-user_question = input("Stel je vraag aan de AI: ")
+target_word = "ijsbeer"
+user_question = input("Wat is jouw gokwoord? ")
 
 response = client.chat.completions.create(
     model="meta-llama/Llama-3.3-70B-Instruct-Turbo-Free",
@@ -10,13 +11,18 @@ response = client.chat.completions.create(
         {
             "role": "system",
             "content": (
-                "Je bent een AI die zeer goed is in topografie. Je kent alle hoofdsteden van de wereld. "
-                "Wanneer je een vraag krijgt, geef je enkel 'ja' of 'nee' als antwoord, op basis van of de bewering feitelijk klopt."
+                "Je bent een spelmaster. De speler moet een woord raden. "
+                "Beoordeel het gokwoord van de speler ten opzichte van het doelwoord. "
+                "Antwoord uitsluitend met één van deze woorden, en niets anders:\n"
+                "- juist\n"
+                "- bijna goed\n"
+                "- zelfde thema\n"
+                "- totaal fout"
             )
         },
         {
             "role": "user",
-            "content": user_question
+            "content": f"Het doelwoord is '{target_word}'. De speler gokt: '{user_question}'."
         }
     ]
 )
