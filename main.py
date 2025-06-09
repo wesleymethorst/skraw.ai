@@ -46,10 +46,10 @@ def evaluate_guess():
                         "Je bent een spelmaster. De speler moet een woord raden. "
                         "Beoordeel het gokwoord van de speler ten opzichte van het doelwoord. "
                         "Antwoord uitsluitend met één van deze woorden, en niets anders:\n"
-                        "- juist\n"
-                        "- bijna goed\n"
-                        "- zelfde thema\n"
-                        "- totaal fout"
+                        "- Juist\n"
+                        "- Bijna goed\n"
+                        "- Zelfde thema\n"
+                        "- Totaal fout"
                     )
                 },
                 {
