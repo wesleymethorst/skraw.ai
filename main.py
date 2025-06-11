@@ -10,13 +10,19 @@ load_dotenv()
 
 app = Flask(__name__)
 
+# CORS configuratie
 CORS(app, origins=[
     "http://localhost:3000",
     "http://localhost:5173", 
     "http://localhost:8080",
     "https://skraw.io",
     "https://www.skraw.io",
+    "*"  # Voor development - verwijder dit later voor security
 ])
+
+# Controleer of API key aanwezig is
+if not os.getenv('TOGETHER_API_KEY'):
+    print("❌ WARNING: TOGETHER_API_KEY environment variable not set!")
 
 client = Together(api_key=os.getenv('TOGETHER_API_KEY'))
 
@@ -28,7 +34,11 @@ def log_message(message):
 @app.route('/', methods=['GET'])
 def health_check():
     log_message("🟢 Health check endpoint accessed")
-    return jsonify({"status": "OK", "message": "Skraw.ai API is running"})
+    return jsonify({
+        "status": "OK", 
+        "message": "Skraw.ai API is running",
+        "has_api_key": bool(os.getenv('TOGETHER_API_KEY'))
+    })
 
 @app.route('/evaluate-guess', methods=['POST'])
 def evaluate_guess():
