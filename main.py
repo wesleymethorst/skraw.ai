@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from together import Together
 import os
 from dotenv import load_dotenv
@@ -8,6 +9,15 @@ from datetime import datetime
 load_dotenv()
 
 app = Flask(__name__)
+
+CORS(app, origins=[
+    "http://localhost:3000",
+    "http://localhost:5173", 
+    "http://localhost:8080",
+    "https://skraw.io",
+    "https://www.skraw.io",
+])
+
 client = Together(api_key=os.getenv('TOGETHER_API_KEY'))
 
 def log_message(message):
