@@ -29,7 +29,7 @@ def log_message(message):
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     print(f"[{timestamp}] {message}")
 
-@app.route('https://skrawio.up.railway.app/', methods=['GET'])
+@app.route('', methods=['GET'])
 def health_check():
     log_message("Health check endpoint accessed")
     return jsonify({
@@ -38,7 +38,7 @@ def health_check():
         "has_api_key": bool(os.getenv('TOGETHER_API_KEY'))
     })
 
-@app.route('https://skrawio.up.railway.app/evaluate-guess', methods=['POST'])
+@app.route('/evaluate-guess', methods=['POST'])
 def evaluate_guess():
     try:
         log_message("New request received at /evaluate-guess")
