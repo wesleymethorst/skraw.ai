@@ -10,17 +10,17 @@ load_dotenv()
 
 app = Flask(__name__)
 
-# CORS configuratie
 CORS(app, origins=[
     "http://localhost:3000",
     "http://localhost:5173", 
     "http://localhost:8080",
     "https://skraw.io",
     "https://www.skraw.io",
-    "*"  # Voor development - verwijder dit later voor security
+    "https://www.skrawio.up.railway.app",
+    "https://skrawio.up.railway.app",
+    "*"  # Voor development
 ])
 
-# Controleer of API key aanwezig is
 if not os.getenv('TOGETHER_API_KEY'):
     print("❌ WARNING: TOGETHER_API_KEY environment variable not set!")
 
